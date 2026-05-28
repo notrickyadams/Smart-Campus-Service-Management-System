@@ -1,121 +1,155 @@
 package org.example.app.managers;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import org.example.app.exceptions.ProcessingException;
-import org.example.app.models.RequestStatus;
-import org.example.app.models.ServiceRequest;
-import org.example.app.services.DataStorageObserver;
+import org.example.app.models.Request;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SystemManager {
 
-    // Thread-safe volatile instance for Singleton Pattern
-    private static volatile SystemManager instance;
+    // singlton implmentation
+    private static SystemManager instance;
 
-    // ObservableList allows JavaFX UI components to auto-update when records change
-    private final ObservableList<ServiceRequest> globalRequests;
-    private final List<DataStorageObserver> storageObservers;
+    // STORE ALL REQUESTS
+    private ArrayList<Request> requests;
 
-    // Private constructor prevents direct initialization
+    // PRIVATE CONSTRUCTOR
     private SystemManager() {
-        this.globalRequests = FXCollections.observableArrayList();
-        this.storageObservers = new ArrayList<>();
+        requests = new ArrayList<>();
     }
 
-    /**
-     * Thread-Safe Double-Checked Locking Singleton Implementation
-     */
+    // GET SINGLE INSTANCE
     public static SystemManager getInstance() {
+
         if (instance == null) {
-            synchronized (SystemManager.class) {
-                if (instance == null) {
-                    instance = new SystemManager();
-                }
-            }
+            instance = new SystemManager();
         }
+
         return instance;
     }
 
-    // --- Observer Hooks ---
-    public void registerStorageObserver(DataStorageObserver observer) {
-        this.storageObservers.add(observer);
+    // ADD REQUEST
+    public void addRequest(Request request) {
+        requests.add(request);
     }
 
-    private void notifyObservers() {
-        for (DataStorageObserver observer : storageObservers) {
-            observer.onDataChanged();
+    // APPROVE REQUEST WITH MULTITHREADING
+    public void approveRequest(Request request) {
+
+        Thread thread = new Thread(() -> {
+
+            try {
+
+                System.out.println("Processing approval...");
+
+                // loadinggg
+                Thread.sleep(3000);
+
+                request.setStatus("Approved");
+
+                System.out.println("Request approved.");
+
+            } catch (InterruptedException e) {
+
+                System.out.println("Error processing request.");
+            }
+        });
+
+        thread.start();
+    }
+
+    // REJECT REQUEST
+    // REJECT REQUEST WITH MULTITHREADING
+    public void rejectRequest(Request request) {
+
+        Thread thread = new Thread(() -> {
+
+            try {
+
+                System.out.println("Processing rejection...");
+
+                // loadinggg
+                Thread.sleep(3000);
+
+                request.setStatus("Rejected");
+
+                System.out.println("Request rejected.");
+
+            } catch (InterruptedException e) {
+
+                System.out.println("Error processing request.");
+            }
+        });
+
+        thread.start();
+    }
+
+    // RETURN ALL REQUESTS
+    public ArrayList<Request> getAllRequests() {
+        return requests;
+    }
+
+    // DISPLAY REQUESTS
+    public void displayAllRequests() {
+
+        for (Request request : requests) {
+
+            System.out.println(
+                    request.getStudent().getUsername()
+                            + " requested "
+                            + request.getService().getName()
+                            + " | Status: "
+                            + request.getStatus()
+            );
         }
     }
 
-    // --- Request Operations ---
-    public synchronized void addRequest(ServiceRequest request) {
-        if (request == null) {
-            throw new ProcessingException("Cannot process null service request.");
-        }
+    // TOTAL REQUESTS
+    public int getTotalRequests() {
+        return requests.size();
+    }
 
-        // Prevent duplicates
-        for (ServiceRequest r : globalRequests) {
-            if (r.getRequestId().equalsIgnoreCase(request.getRequestId())) {
-                throw new ProcessingException("Duplicate Request Error: ID " + request.getRequestId() + " already exists.");
+    // COUNT PENDING REQUESTS
+    public int getPendingRequestsCount() {
+
+        int count = 0;
+
+        for (Request request : requests) {
+
+            if (request.getStatus().equalsIgnoreCase("Pending")) {
+                count++;
             }
         }
 
-        globalRequests.add(request);
-        notifyObservers();
+        return count;
     }
 
-    public synchronized void updateRequestStatus(String requestId, RequestStatus newStatus) {
-        ServiceRequest request = findRequestById(requestId);
-        if (request == null) {
-            throw new ProcessingException("Request Update Error: Request ID " + requestId + " not found.");
+    // COUNT APPROVED REQUESTS
+    public int getApprovedRequestsCount() {
+
+        int count = 0;
+
+        for (Request request : requests) {
+
+            if (request.getStatus().equalsIgnoreCase("Approved")) {
+                count++;
+            }
         }
 
-        request.setStatus(newStatus);
-        notifyObservers(); // Triggers automated data saves via observers if registered
+        return count;
     }
 
-    public synchronized void removeRequest(String requestId) {
-        ServiceRequest request = findRequestById(requestId);
-        if (request == null) {
-            throw new ProcessingException("Deletion Error: Request ID " + requestId + " not found.");
+    // COUNT REJECTED REQUESTS
+    public int getRejectedRequestsCount() {
+
+        int count = 0;
+
+        for (Request request : requests) {
+
+            if (request.getStatus().equalsIgnoreCase("Rejected")) {
+                count++;
+            }
         }
-        globalRequests.remove(request);
-        notifyObservers();
-    }
 
-    private ServiceRequest findRequestById(String requestId) {
-        return globalRequests.stream()
-                .filter(r -> r.getRequestId().equalsIgnoreCase(requestId))
-                .findFirst()
-                .orElse(null);
-    }
-
-    public ObservableList<ServiceRequest> getGlobalRequests() {
-        return globalRequests;
-    }
-
-    // --- Analytics Preparation Methods ---
-    public long getTotalRequests() {
-        return globalRequests.size();
-    }
-
-    public long getCountByStatus(RequestStatus status) {
-        return globalRequests.stream().filter(r -> r.getStatus() == status).count();
-    }
-
-    public String getMostRequestedService() {
-        if (globalRequests.isEmpty()) return "None";
-        return globalRequests.stream()
-                .collect(java.util.stream.Collectors.groupingBy(
-                        r -> r.getService().getServiceName(),
-                        java.util.stream.Collectors.counting()
-                ))
-                .entrySet().stream()
-                .max(java.util.Map.Entry.comparingByValue())
-                .map(java.util.Map.Entry::getKey)
-                .orElse("None");
+        return count;
     }
 }

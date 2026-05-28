@@ -1,17 +1,66 @@
 package org.example.app;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+import org.example.app.managers.SystemManager;
+import org.example.app.models.Request;
+import org.example.app.models.Service;
+import org.example.app.models.Student;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+public class Main {
+
+    public static void main(String[] args) {
+
+        // CREATE SYSTEM MANAGER
+        SystemManager systemManager = SystemManager.getInstance();
+
+        // CREATE STUDENT
+        Student student = new Student("Lojan", "123");
+
+        // CREATE SERVICE
+        Service service =
+                new Service("Bus Service", "Transportation");
+
+        // CREATE REQUEST
+        Request request =
+                new Request(student, service);
+
+        // ADD REQUEST TO SYSTEM
+        systemManager.addRequest(request);
+
+        // DISPLAY BEFORE APPROVAL
+        System.out.println("BEFORE APPROVAL:");
+        systemManager.displayAllRequests();
+
+        // APPROVE REQUEST
+        systemManager.approveRequest(request);
+
+        // WAIT FOR THREAD TO FINISH
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+
+        // DISPLAY AFTER APPROVAL
+        System.out.println("\nAFTER APPROVAL:");
+        systemManager.displayAllRequests();
+
+        // DISPLAY STATISTICS
+        System.out.println("\nSTATISTICS:");
+
+        System.out.println(
+                "Total Requests: "
+                        + systemManager.getTotalRequests());
+
+        System.out.println(
+                "Approved Requests: "
+                        + systemManager.getApprovedRequestsCount());
+
+        System.out.println(
+                "Pending Requests: "
+                        + systemManager.getPendingRequestsCount());
+
+        System.out.println(
+                "Rejected Requests: "
+                        + systemManager.getRejectedRequestsCount());
     }
 }

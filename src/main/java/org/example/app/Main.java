@@ -1,66 +1,47 @@
 package org.example.app;
 
-import org.example.app.managers.SystemManager;
-import org.example.app.models.Request;
-import org.example.app.models.Service;
-import org.example.app.models.Student;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-public class Main {
+public class Main extends Application {
 
-    public static void main(String[] args) {
+    private static Stage mainStage;
 
-        // CREATE SYSTEM MANAGER
-        SystemManager systemManager = SystemManager.getInstance();
+    @Override
+    public void start(Stage stage) throws Exception {
+        mainStage = stage;
 
-        // CREATE STUDENT
-        Student student = new Student("Lojan", "123");
+        // DEBUG — fixed path to match your actual folder/filename
+        var url = Main.class.getResource("/org/example/app/fxml/Login.fxml");
+        System.out.println("FXML URL = " + url);
 
-        // CREATE SERVICE
-        Service service =
-                new Service("Bus Service", "Transportation");
-
-        // CREATE REQUEST
-        Request request =
-                new Request(student, service);
-
-        // ADD REQUEST TO SYSTEM
-        systemManager.addRequest(request);
-
-        // DISPLAY BEFORE APPROVAL
-        System.out.println("BEFORE APPROVAL:");
-        systemManager.displayAllRequests();
-
-        // APPROVE REQUEST
-        systemManager.approveRequest(request);
-
-        // WAIT FOR THREAD TO FINISH
-        try {
-            Thread.sleep(4000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (url == null) {
+            System.out.println("FXML NOT FOUND — path is wrong");
+            return;
         }
 
-        // DISPLAY AFTER APPROVAL
-        System.out.println("\nAFTER APPROVAL:");
-        systemManager.displayAllRequests();
+        stage.setTitle("University Service System");
+        navigateTo("Login.fxml", 800, 850);
+        stage.show();
+    }
 
-        // DISPLAY STATISTICS
-        System.out.println("\nSTATISTICS:");
+    public static void navigateTo(String fxmlFile, double width, double height) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    Main.class.getResource("/org/example/app/fxml/" + fxmlFile)
+            );
+            Parent root = loader.load();
+            mainStage.setScene(new Scene(root, width, height));
+        } catch (Exception e) {
+            System.err.println("Could not load: " + fxmlFile);
+            e.printStackTrace();
+        }
+    }
 
-        System.out.println(
-                "Total Requests: "
-                        + systemManager.getTotalRequests());
-
-        System.out.println(
-                "Approved Requests: "
-                        + systemManager.getApprovedRequestsCount());
-
-        System.out.println(
-                "Pending Requests: "
-                        + systemManager.getPendingRequestsCount());
-
-        System.out.println(
-                "Rejected Requests: "
-                        + systemManager.getRejectedRequestsCount());
+    public static void main(String[] args) {
+        launch(args);
     }
 }

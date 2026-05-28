@@ -4,11 +4,11 @@
 <?import javafx.scene.layout.*?>
 
 <BorderPane
-        prefHeight="850" prefWidth="800"
+        prefHeight="850" prefWidth="900"
         style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #1e293b);"
         xmlns="http://javafx.com/javafx/17.0.2-ea"
         xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="org.example.app.controllers.LoginController">
+        fx:controller="org.example.app.controllers.RequestController">
 
     <!-- TOP NAVBAR -->
     <top>
@@ -18,11 +18,22 @@
             -fx-border-color: #334155;
             -fx-border-width: 0 0 1 0;">
 
+            <Button onAction="#goBack" style="
+                -fx-background-color: rgba(255,255,255,0.07);
+                -fx-text-fill: white;
+                -fx-font-size: 13;
+                -fx-font-weight: bold;
+                -fx-background-radius: 10;
+                -fx-border-color: #334155;
+                -fx-border-radius: 10;
+                -fx-cursor: hand;"
+                    text="← Back" prefHeight="36" prefWidth="90"/>
+
             <VBox spacing="2">
                 <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 11; -fx-font-weight: bold;"
                        text="UNIVERSITY SERVICE SYSTEM" />
                 <Label style="-fx-text-fill: white; -fx-font-size: 26; -fx-font-weight: bold;"
-                       text="Welcome Back" />
+                       text="Submit Request" />
             </VBox>
 
             <Pane HBox.hgrow="ALWAYS" />
@@ -42,76 +53,67 @@
         </HBox>
     </top>
 
-    <!-- CENTER LOGIN CARD -->
     <center>
         <StackPane>
-            <VBox fx:id="loginCard" alignment="CENTER" spacing="20" maxWidth="420" style="
+            <VBox fx:id="requestCard" alignment="CENTER" spacing="22" maxWidth="500" style="
                 -fx-background-color: rgba(255,255,255,0.05);
                 -fx-background-radius: 24;
                 -fx-padding: 45;
                 -fx-border-color: rgba(255,255,255,0.08);
                 -fx-border-radius: 24;">
 
-                <!-- ICON -->
-                <Label style="-fx-font-size: 52;" text="🎓" />
+                <Label style="-fx-font-size: 46;" text="📝" />
 
-                <!-- TITLE -->
-                <VBox alignment="CENTER" spacing="6">
-                    <Label style="
-                        -fx-text-fill: white;
-                        -fx-font-size: 26;
-                        -fx-font-weight: bold;"
-                           text="Sign In" />
-                    <Label style="
-                        -fx-text-fill: #94a3b8;
-                        -fx-font-size: 13;"
-                           text="Enter your credentials to continue" />
+                <VBox alignment="CENTER" spacing="5">
+                    <Label style="-fx-text-fill: white; -fx-font-size: 22; -fx-font-weight: bold;"
+                           text="New Service Request" />
+                    <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 13;"
+                           text="Fill in the details below" />
                 </VBox>
 
-                <!-- USERNAME -->
-                <VBox spacing="7" maxWidth="340">
+                <!-- SERVICE DROPDOWN -->
+                <VBox spacing="7" maxWidth="400">
                     <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 12; -fx-font-weight: bold;"
-                           text="USERNAME" />
-                    <TextField fx:id="usernameField" promptText="Enter your username"
-                               prefHeight="46" prefWidth="340"
-                               style="
+                           text="SERVICE TYPE" />
+                    <ComboBox fx:id="serviceComboBox" prefHeight="46" prefWidth="400"
+                              promptText="Select a service..."
+                              style="
                             -fx-background-color: rgba(255,255,255,0.07);
                             -fx-text-fill: white;
-                            -fx-prompt-text-fill: #475569;
                             -fx-font-size: 14;
                             -fx-background-radius: 14;
                             -fx-border-color: #334155;
-                            -fx-border-radius: 14;
-                            -fx-padding: 0 15 0 15;" />
+                            -fx-border-radius: 14;" />
                 </VBox>
 
-                <!-- PASSWORD -->
-                <VBox spacing="7" maxWidth="340">
+                <!-- NOTES -->
+                <VBox spacing="7" maxWidth="400">
                     <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 12; -fx-font-weight: bold;"
-                           text="PASSWORD" />
-                    <PasswordField fx:id="passwordField" promptText="Enter your password"
-                                   prefHeight="46" prefWidth="340"
-                                   style="
+                           text="ADDITIONAL NOTES (OPTIONAL)" />
+                    <TextArea fx:id="notesArea" prefHeight="110" prefWidth="400"
+                              promptText="Add any extra details here..."
+                              wrapText="true"
+                              style="
                             -fx-background-color: rgba(255,255,255,0.07);
                             -fx-text-fill: white;
                             -fx-prompt-text-fill: #475569;
-                            -fx-font-size: 14;
+                            -fx-font-size: 13;
                             -fx-background-radius: 14;
                             -fx-border-color: #334155;
                             -fx-border-radius: 14;
-                            -fx-padding: 0 15 0 15;" />
+                            -fx-padding: 10;" />
                 </VBox>
 
-                <!-- ERROR / SUCCESS MESSAGE -->
-                <Label fx:id="messageLabel" prefWidth="340" wrapText="true" style="
+                <!-- MESSAGE -->
+                <Label fx:id="messageLabel" prefWidth="400" wrapText="true" style="
                     -fx-text-fill: #ef4444;
                     -fx-font-size: 13;
                     -fx-font-weight: bold;
                     -fx-alignment: CENTER;" />
 
-                <!-- LOGIN BUTTON -->
-                <Button text="Sign In →" prefHeight="50" prefWidth="340"
-                        onAction="#handleLogin"
+                <!-- SUBMIT BUTTON -->
+                <Button text="Submit Request →" prefHeight="50" prefWidth="400"
+                        onAction="#handleSubmit"
                         style="
                         -fx-background-color: #2563eb;
                         -fx-text-fill: white;
@@ -120,9 +122,18 @@
                         -fx-background-radius: 14;
                         -fx-cursor: hand;" />
 
-                <!-- FOOTER NOTE -->
-                <Label style="-fx-text-fill: #475569; -fx-font-size: 12;"
-                       text="Contact admin if you forgot your credentials" />
+                <!-- CANCEL -->
+                <Button text="Cancel" prefHeight="44" prefWidth="400"
+                        onAction="#goBack"
+                        style="
+                        -fx-background-color: transparent;
+                        -fx-text-fill: #94a3b8;
+                        -fx-font-size: 13;
+                        -fx-font-weight: bold;
+                        -fx-background-radius: 14;
+                        -fx-border-color: #334155;
+                        -fx-border-radius: 14;
+                        -fx-cursor: hand;" />
 
             </VBox>
         </StackPane>

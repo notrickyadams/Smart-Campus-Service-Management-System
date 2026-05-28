@@ -1,5 +1,9 @@
 package org.example.app.controllers;
 
+import javafx.fxml.FXML;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.*;
 import org.example.app.managers.SystemManager;
 import org.example.app.models.Request;
 
@@ -7,44 +11,73 @@ public class AdminDashboardController {
 
     private SystemManager systemManager;
 
-    // CONSTRUCTOR
-    public AdminDashboardController() {
+    // ================= UI ELEMENTS (FROM FXML) =================
+
+    @FXML private TableView<Request> requestTable;
+
+    @FXML private Label totalRequestsLabel;
+    @FXML private Label pendingRequestsLabel;
+    @FXML private Label approvedRequestsLabel;
+    @FXML private Label rejectedRequestsLabel;
+
+    // ================= INITIALIZE =================
+
+    @FXML
+    public void initialize() {
+
         systemManager = SystemManager.getInstance();
+
+        loadRequests();
+        updateStats();
     }
 
-    // SHOW ALL REQUESTS
-    public void showAllRequests() {
+    // ================= BUTTON ACTIONS =================
 
-        systemManager.displayAllRequests();
+    @FXML
+    public void handleApprove() {
+
+        Request selected = requestTable.getSelectionModel().getSelectedItem();
+
+        if (selected != null) {
+            systemManager.approveRequest(selected);
+            refreshUI();
+        }
     }
 
-    // APPROVE REQUEST
-    public void approveRequest(Request request) {
+    @FXML
+    public void handleReject() {
 
-        systemManager.approveRequest(request);
+        Request selected = requestTable.getSelectionModel().getSelectedItem();
+
+        if (selected != null) {
+            systemManager.rejectRequest(selected);
+            refreshUI();
+        }
     }
 
-    // REJECT REQUEST
-    public void rejectRequest(Request request) {
-
-        systemManager.rejectRequest(request);
+    @FXML
+    public void refreshUI() {
+        loadRequests();
+        updateStats();
     }
 
-    // SHOW STATISTICS
-    public void showStatistics() {
+    // ================= DATA LOADING =================
 
-        System.out.println("===== SYSTEM STATISTICS =====");
+    private void loadRequests() {
 
-        System.out.println("Total Requests: "
-                + systemManager.getTotalRequests());
+        ObservableList<Request> data =
+                FXCollections.observableArrayList(systemManager.getAllRequests());
 
-        System.out.println("Pending Requests: "
-                + systemManager.getPendingRequestsCount());
+        requestTable.setItems(data);
+    }
 
-        System.out.println("Approved Requests: "
-                + systemManager.getApprovedRequestsCount());
+    // ================= STATS =================
 
-        System.out.println("Rejected Requests: "
-                + systemManager.getRejectedRequestsCount());
+    private void updateStats() {
+
+        totalRequestsLabel.setText(String.valueOf(systemManager.getTotalRequests()));
+        pendingRequestsLabel.setText(String.valueOf(systemManager.getPendingRequestsCount()));
+        approvedRequestsLabel.setText(String.valueOf(systemManager.getApprovedRequestsCount()));
+        rejectedRequestsLabel.setText(String.valueOf(systemManager.getRejectedRequestsCount()));
     }
 }

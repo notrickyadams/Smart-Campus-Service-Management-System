@@ -1,5 +1,9 @@
 package org.example.app.controllers;
-
+import org.example.app.managers.AuthenticationManager;
+import org.example.app.models.Admin;
+import org.example.app.models.Student;
+import org.example.app.models.User;
+import org.example.app.Main;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -27,19 +31,21 @@ public class LoginController {
             return;
         }
 
-        if (username.equals("admin") && password.equals("admin123")) {
-            showSuccess("Welcome, Admin!");
-            Main.navigateTo("AdminDashboard.fxml", 900, 850);
+        User user = AuthenticationManager.getInstance().login(username, password);
 
-        } else if (username.equals("student") && password.equals("student123")) {
-            showSuccess("Welcome, Student!");
-            Main.navigateTo("StudentDashboard.fxml", 900, 850);
-
-        } else {
+        if (user == null) {
             showError("Invalid username or password.");
+            return;
+        }
+
+        showSuccess("Welcome, " + user.getUsername() + "!");
+
+        if (user instanceof Admin) {
+            Main.navigateTo("AdminDashboard.fxml", 900, 850);
+        } else if (user instanceof Student) {
+            Main.navigateTo("StudentDashboard.fxml", 900, 850);
         }
     }
-
     @FXML
     public void toggleTheme() {
         isDarkMode = !isDarkMode;

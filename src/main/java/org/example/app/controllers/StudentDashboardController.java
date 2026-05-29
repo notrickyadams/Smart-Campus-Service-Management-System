@@ -9,6 +9,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.example.app.Main;
 import org.example.app.models.Request;
+import org.example.app.managers.AuthenticationManager;
+import org.example.app.models.Student;
+import org.example.app.models.User;
+import org.example.app.Main;
 
 public class StudentDashboardController {
 
@@ -28,21 +32,30 @@ public class StudentDashboardController {
 
     @FXML
     public void initialize() {
-        // TEMP — replace with real student from SystemManager later
-        studentNameLabel.setText("John Doe");
-        studentIdLabel.setText("ID: 20230001");
+        User user = AuthenticationManager.getInstance().getCurrentUser();
+
+        if (user instanceof Student student) {
+            studentNameLabel.setText(student.getUsername());
+            studentIdLabel.setText("Student Account");
+        }
+
+        // load stats — 0 for now until SystemManager is connected
         totalLabel.setText("0");
         pendingLabel.setText("0");
         approvedLabel.setText("0");
     }
 
+    @FXML
+    private void handleLogout() {
+        AuthenticationManager.getInstance().logout();
+        Main.navigateTo("Login.fxml", 800, 850);
+    }
     @FXML private void handleTranscriptRequest()  { goToRequestWith("Transcript Request"); }
     @FXML private void handleIDRequest()           { goToRequestWith("ID Replacement"); }
     @FXML private void handleEnrollmentRequest()   { goToRequestWith("Enrollment Letter"); }
     @FXML private void handleWithdrawalRequest()   { goToRequestWith("Course Withdrawal"); }
     @FXML private void goToRequest()               { Main.navigateTo("RequestScreen.fxml", 900, 850); }
     @FXML private void goToStatus()                { Main.navigateTo("StatusScreen.fxml", 900, 850); }
-    @FXML private void handleLogout()              { Main.navigateTo("Login.fxml", 800, 850); }
 
     private void goToRequestWith(String serviceType) {
         try {

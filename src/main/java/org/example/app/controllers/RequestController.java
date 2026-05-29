@@ -6,6 +6,11 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import org.example.app.Main;
+import org.example.app.managers.AuthenticationManager;
+import org.example.app.models.Request;
+import org.example.app.models.Service;
+import org.example.app.models.Student;
+import org.example.app.models.User;
 
 public class RequestController {
 
@@ -41,30 +46,32 @@ public class RequestController {
             return;
         }
 
-        try {
-            // CONNECT BACKEND HERE:
-            // Student student = SystemManager.getInstance().getCurrentStudent();
-            // Service service = new Service(selectedService);
-            // Request request = new Request(student, service, notesArea.getText());
-            // SystemManager.getInstance().addRequest(request);
+        User user = AuthenticationManager.getInstance().getCurrentUser();
 
-            showSuccess("Request submitted successfully!");
-            serviceComboBox.setValue(null);
-            notesArea.clear();
-
-            // Navigate back after 1.2 seconds
-            new Thread(() -> {
-                try {
-                    Thread.sleep(1200);
-                    javafx.application.Platform.runLater(() ->
-                            Main.navigateTo("StudentDashboard.fxml", 900, 850)
-                    );
-                } catch (InterruptedException ignored) {}
-            }).start();
-
-        } catch (Exception e) {
-            showError("Failed to submit: " + e.getMessage());
+        if (!(user instanceof Student student)) {
+            showError("No student logged in.");
+            return;
         }
+
+        // Create real objects using YOUR models
+        Service service = new Service(selectedService, "University service request");
+        Request request = new Request(student, service);
+
+        // Add to SystemManager — Member 3's job, uncomment when ready:
+        // SystemManager.getInstance().addRequest(request);
+
+        showSuccess("Request submitted successfully!");
+        serviceComboBox.setValue(null);
+        notesArea.clear();
+
+        new Thread(() -> {
+            try {
+                Thread.sleep(1200);
+                javafx.application.Platform.runLater(() ->
+                        Main.navigateTo("StudentDashboard.fxml", 900, 850)
+                );
+            } catch (InterruptedException ignored) {}
+        }).start();
     }
 
     @FXML private void goBack() { Main.navigateTo("StudentDashboard.fxml", 900, 850); }

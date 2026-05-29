@@ -5,6 +5,7 @@
 
 <BorderPane
         prefHeight="850" prefWidth="800"
+        fx:id="rootPane"
         style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #1e293b);"
         xmlns="http://javafx.com/javafx/17.0.2-ea"
         xmlns:fx="http://javafx.com/fxml/1"
@@ -52,20 +53,56 @@
                 -fx-border-color: rgba(255,255,255,0.08);
                 -fx-border-radius: 24;">
 
-                <!-- ICON -->
-                <Label style="-fx-font-size: 52;" text="🎓" />
+                <!-- ICON — changes based on role -->
+                <Label fx:id="roleIcon" style="-fx-font-size: 52;" text="🎓" />
+
+                <!-- ROLE TOGGLE -->
+                <VBox alignment="CENTER" spacing="10">
+                    <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 12; -fx-font-weight: bold;"
+                           text="SELECT YOUR ROLE" />
+                    <HBox spacing="0" alignment="CENTER">
+
+                        <!-- STUDENT BUTTON -->
+                        <Button fx:id="studentRoleBtn"
+                                text="🎓  Student"
+                                prefHeight="42" prefWidth="160"
+                                onAction="#selectStudent"
+                                style="
+                                -fx-background-color: #2563eb;
+                                -fx-text-fill: white;
+                                -fx-font-size: 13;
+                                -fx-font-weight: bold;
+                                -fx-background-radius: 14 0 0 14;
+                                -fx-cursor: hand;" />
+
+                        <!-- ADMIN BUTTON -->
+                        <Button fx:id="adminRoleBtn"
+                                text="👨‍💼  Admin"
+                                prefHeight="42" prefWidth="160"
+                                onAction="#selectAdmin"
+                                style="
+                                -fx-background-color: rgba(255,255,255,0.07);
+                                -fx-text-fill: #94a3b8;
+                                -fx-font-size: 13;
+                                -fx-font-weight: bold;
+                                -fx-background-radius: 0 14 14 0;
+                                -fx-border-color: #334155;
+                                -fx-border-radius: 0 14 14 0;
+                                -fx-cursor: hand;" />
+                    </HBox>
+                </VBox>
 
                 <!-- TITLE -->
                 <VBox alignment="CENTER" spacing="6">
-                    <Label style="
+                    <Label fx:id="roleTitle" style="
                         -fx-text-fill: white;
                         -fx-font-size: 26;
                         -fx-font-weight: bold;"
-                           text="Sign In" />
-                    <Label style="
+                           text="Student Sign In" />
+                    <Label fx:id="roleSubtitle" style="
                         -fx-text-fill: #94a3b8;
                         -fx-font-size: 13;"
-                           text="Enter your credentials to continue" />
+                           text="Enter your student credentials" />
                 </VBox>
 
                 <!-- USERNAME -->
@@ -110,7 +147,7 @@
                     -fx-alignment: CENTER;" />
 
                 <!-- LOGIN BUTTON -->
-                <Button text="Sign In →" prefHeight="50" prefWidth="340"
+                <Button fx:id="loginButton" text="Sign In as Student →" prefHeight="50" prefWidth="340"
                         onAction="#handleLogin"
                         style="
                         -fx-background-color: #2563eb;

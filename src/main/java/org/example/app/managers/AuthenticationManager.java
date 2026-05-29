@@ -14,24 +14,20 @@ public class AuthenticationManager {
     private User currentUser;
 
     private AuthenticationManager() {
-        // Hardcoded users for now — replace with FileManager.loadUsers() later
         users.add(new Admin("admin", "admin123"));
         users.add(new Student("student", "student123"));
         users.add(new Student("alice", "alice123"));
     }
 
     public static AuthenticationManager getInstance() {
-        if (instance == null) {
-            instance = new AuthenticationManager();
-        }
+        if (instance == null) instance = new AuthenticationManager();
         return instance;
     }
 
-    // Returns matched User or null if wrong credentials
     public User login(String username, String password) {
         for (User user : users) {
             if (user.getUsername().equals(username) &&
-                    user.checkPassword(password)) {  // uses YOUR checkPassword method
+                    user.checkPassword(password)) {
                 currentUser = user;
                 return user;
             }
@@ -39,6 +35,6 @@ public class AuthenticationManager {
         return null;
     }
 
-    public User getCurrentUser()  { return currentUser; }
-    public void logout()          { currentUser = null; }
+    public User getCurrentUser() { return currentUser; }
+    public void logout()         { currentUser = null; }
 }

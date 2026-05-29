@@ -10,12 +10,8 @@ public class Service {
         this.description = description;
     }
 
-    public String getName() {
-        return name;
-    }
-    public String getDescription() {
-        return description;
-    }
+    public String getName()        { return name; }
+    public String getDescription() { return description; }
 
     public void displayService() {
         System.out.println(name + " - " + description);

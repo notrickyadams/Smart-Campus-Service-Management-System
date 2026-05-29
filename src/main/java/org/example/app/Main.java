@@ -13,16 +13,6 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         mainStage = stage;
-
-        // DEBUG — fixed path to match your actual folder/filename
-        var url = Main.class.getResource("/org/example/app/fxml/Login.fxml");
-        System.out.println("FXML URL = " + url);
-
-        if (url == null) {
-            System.out.println("FXML NOT FOUND — path is wrong");
-            return;
-        }
-
         stage.setTitle("University Service System");
         navigateTo("Login.fxml", 800, 850);
         stage.show();

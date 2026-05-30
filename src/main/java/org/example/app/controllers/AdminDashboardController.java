@@ -31,6 +31,10 @@ public class AdminDashboardController {
         loadRequests();
     }
 
+    @FXML
+    private void goToAnalytics() {
+        Main.navigateTo("AnalyticsScreen.fxml", 900, 850);
+    }
     private void loadRequests() {
         // CONNECT BACKEND HERE:
         // List<Request> requests = SystemManager.getInstance().getAllRequests();

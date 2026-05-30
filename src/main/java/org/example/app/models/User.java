@@ -20,4 +20,8 @@ public abstract class User {
     }
 
     public abstract void displayDashboard();
+
+    public String getPassword() {
+        return "";
+    }
 }

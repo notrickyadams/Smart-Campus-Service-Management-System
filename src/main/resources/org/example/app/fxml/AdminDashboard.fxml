@@ -114,7 +114,19 @@
                             </VBox>
                         </HBox>
 
+                        <Button prefHeight="46" prefWidth="260"
+                                onAction="#goToAnalytics"
+                                style="
+        -fx-background-color: #7c3aed;
+        -fx-text-fill: white;
+        -fx-font-size: 14;
+        -fx-font-weight: bold;
+        -fx-background-radius: 14;
+        -fx-cursor: hand;"
+                                text="📊 View Analytics" />
+
                     </VBox>
+
 
                 </VBox>
 

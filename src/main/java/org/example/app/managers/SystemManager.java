@@ -1,155 +1,81 @@
 package org.example.app.managers;
 
 import org.example.app.models.Request;
+import org.example.app.models.Student;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class SystemManager {
 
-    // singlton implmentation
     private static SystemManager instance;
+    private ArrayList<Request> requests = new ArrayList<>();
 
-    // STORE ALL REQUESTS
-    private ArrayList<Request> requests;
-
-    // PRIVATE CONSTRUCTOR
     private SystemManager() {
-        requests = new ArrayList<>();
+        // Load requests from file on startup
+        requests = new ArrayList<>(FileManager.getInstance().loadRequests());
     }
 
-    // GET SINGLE INSTANCE
     public static SystemManager getInstance() {
-
-        if (instance == null) {
-            instance = new SystemManager();
-        }
-
+        if (instance == null) instance = new SystemManager();
         return instance;
     }
 
-    // ADD REQUEST
     public void addRequest(Request request) {
         requests.add(request);
+        FileManager.getInstance().saveRequests(requests); // save immediately
     }
 
-    // APPROVE REQUEST WITH MULTITHREADING
     public void approveRequest(Request request) {
-
-        Thread thread = new Thread(() -> {
-
+        new Thread(() -> {
             try {
-
                 System.out.println("Processing approval...");
-
-                // loadinggg
                 Thread.sleep(3000);
-
                 request.setStatus("Approved");
-
+                FileManager.getInstance().saveRequests(requests); // save after update
                 System.out.println("Request approved.");
-
             } catch (InterruptedException e) {
-
-                System.out.println("Error processing request.");
+                System.out.println("Error processing.");
             }
-        });
-
-        thread.start();
+        }).start();
     }
 
-    // REJECT REQUEST
-    // REJECT REQUEST WITH MULTITHREADING
     public void rejectRequest(Request request) {
-
-        Thread thread = new Thread(() -> {
-
+        new Thread(() -> {
             try {
-
                 System.out.println("Processing rejection...");
-
-                // loadinggg
                 Thread.sleep(3000);
-
                 request.setStatus("Rejected");
-
+                FileManager.getInstance().saveRequests(requests); // save after update
                 System.out.println("Request rejected.");
-
             } catch (InterruptedException e) {
-
-                System.out.println("Error processing request.");
+                System.out.println("Error processing.");
             }
-        });
-
-        thread.start();
+        }).start();
     }
 
-    // RETURN ALL REQUESTS
-    public ArrayList<Request> getAllRequests() {
-        return requests;
+    public ArrayList<Request> getAllRequests() { return requests; }
+
+    public ArrayList<Request> getRequestsByStudent(String username) {
+        return requests.stream()
+                .filter(r -> r.getStudent().getUsername().equals(username))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    // DISPLAY REQUESTS
-    public void displayAllRequests() {
+    public int getTotalRequests()         { return requests.size(); }
 
-        for (Request request : requests) {
-
-            System.out.println(
-                    request.getStudent().getUsername()
-                            + " requested "
-                            + request.getService().getName()
-                            + " | Status: "
-                            + request.getStatus()
-            );
-        }
-    }
-
-    // TOTAL REQUESTS
-    public int getTotalRequests() {
-        return requests.size();
-    }
-
-    // COUNT PENDING REQUESTS
     public int getPendingRequestsCount() {
-
-        int count = 0;
-
-        for (Request request : requests) {
-
-            if (request.getStatus().equalsIgnoreCase("Pending")) {
-                count++;
-            }
-        }
-
-        return count;
+        return (int) requests.stream()
+                .filter(r -> r.getStatus().equalsIgnoreCase("Pending")).count();
     }
 
-    // COUNT APPROVED REQUESTS
     public int getApprovedRequestsCount() {
-
-        int count = 0;
-
-        for (Request request : requests) {
-
-            if (request.getStatus().equalsIgnoreCase("Approved")) {
-                count++;
-            }
-        }
-
-        return count;
+        return (int) requests.stream()
+                .filter(r -> r.getStatus().equalsIgnoreCase("Approved")).count();
     }
 
-    // COUNT REJECTED REQUESTS
     public int getRejectedRequestsCount() {
-
-        int count = 0;
-
-        for (Request request : requests) {
-
-            if (request.getStatus().equalsIgnoreCase("Rejected")) {
-                count++;
-            }
-        }
-
-        return count;
+        return (int) requests.stream()
+                .filter(r -> r.getStatus().equalsIgnoreCase("Rejected")).count();
     }
 }

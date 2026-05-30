@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane
+        prefHeight="850" prefWidth="800"
+        fx:id="rootPane"
+        style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #1e293b);"
+        xmlns="http://javafx.com/javafx/17.0.2-ea"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="org.example.app.controllers.RegisterController">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="20" style="
+            -fx-background-color: rgba(15,23,42,0.95);
+            -fx-padding: 15 35 15 35;
+            -fx-border-color: #334155;
+            -fx-border-width: 0 0 1 0;">
+
+            <VBox spacing="2">
+                <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 11; -fx-font-weight: bold;"
+                       text="UNIVERSITY SERVICE SYSTEM" />
+                <Label style="-fx-text-fill: white; -fx-font-size: 26; -fx-font-weight: bold;"
+                       text="Create Account" />
+            </VBox>
+        </HBox>
+    </top>
+
+    <center>
+        <StackPane>
+            <VBox fx:id="registerCard" alignment="CENTER" spacing="20" maxWidth="420" style="
+                -fx-background-color: rgba(255,255,255,0.05);
+                -fx-background-radius: 24;
+                -fx-padding: 45;
+                -fx-border-color: rgba(255,255,255,0.08);
+                -fx-border-radius: 24;">
+
+                <Label style="-fx-font-size: 46;" text="📝" />
+
+                <VBox alignment="CENTER" spacing="5">
+                    <Label style="-fx-text-fill: white; -fx-font-size: 22; -fx-font-weight: bold;"
+                           text="Student Registration" />
+                    <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 13;"
+                           text="Create your student account" />
+                </VBox>
+
+                <!-- USERNAME -->
+                <VBox spacing="7" maxWidth="340">
+                    <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 12; -fx-font-weight: bold;"
+                           text="USERNAME" />
+                    <TextField fx:id="usernameField" promptText="Choose a username"
+                               prefHeight="46" prefWidth="340"
+                               style="
+                            -fx-background-color: rgba(255,255,255,0.07);
+                            -fx-text-fill: white;
+                            -fx-prompt-text-fill: #475569;
+                            -fx-font-size: 14;
+                            -fx-background-radius: 14;
+                            -fx-border-color: #334155;
+                            -fx-border-radius: 14;
+                            -fx-padding: 0 15 0 15;" />
+                </VBox>
+
+                <!-- PASSWORD -->
+                <VBox spacing="7" maxWidth="340">
+                    <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 12; -fx-font-weight: bold;"
+                           text="PASSWORD" />
+                    <PasswordField fx:id="passwordField" promptText="Choose a password"
+                                   prefHeight="46" prefWidth="340"
+                                   style="
+                            -fx-background-color: rgba(255,255,255,0.07);
+                            -fx-text-fill: white;
+                            -fx-prompt-text-fill: #475569;
+                            -fx-font-size: 14;
+                            -fx-background-radius: 14;
+                            -fx-border-color: #334155;
+                            -fx-border-radius: 14;
+                            -fx-padding: 0 15 0 15;" />
+                </VBox>
+
+                <!-- CONFIRM PASSWORD -->
+                <VBox spacing="7" maxWidth="340">
+                    <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 12; -fx-font-weight: bold;"
+                           text="CONFIRM PASSWORD" />
+                    <PasswordField fx:id="confirmPasswordField" promptText="Confirm your password"
+                                   prefHeight="46" prefWidth="340"
+                                   style="
+                            -fx-background-color: rgba(255,255,255,0.07);
+                            -fx-text-fill: white;
+                            -fx-prompt-text-fill: #475569;
+                            -fx-font-size: 14;
+                            -fx-background-radius: 14;
+                            -fx-border-color: #334155;
+                            -fx-border-radius: 14;
+                            -fx-padding: 0 15 0 15;" />
+                </VBox>
+
+                <!-- MESSAGE -->
+                <Label fx:id="messageLabel" prefWidth="340" wrapText="true" style="
+                    -fx-text-fill: #ef4444; -fx-font-size: 13;
+                    -fx-font-weight: bold; -fx-alignment: CENTER;" />
+
+                <!-- REGISTER BUTTON -->
+                <Button text="Create Account →" prefHeight="50" prefWidth="340"
+                        onAction="#handleRegister"
+                        style="
+                        -fx-background-color: #2563eb;
+                        -fx-text-fill: white;
+                        -fx-font-size: 15;
+                        -fx-font-weight: bold;
+                        -fx-background-radius: 14;
+                        -fx-cursor: hand;" />
+
+                <!-- BACK TO LOGIN -->
+                <Button text="Already have an account? Sign In"
+                        prefHeight="44" prefWidth="340"
+                        onAction="#goToLogin"
+                        style="
+                        -fx-background-color: transparent;
+                        -fx-text-fill: #94a3b8;
+                        -fx-font-size: 13;
+                        -fx-font-weight: bold;
+                        -fx-background-radius: 14;
+                        -fx-border-color: #334155;
+                        -fx-border-radius: 14;
+                        -fx-cursor: hand;" />
+
+            </VBox>
+        </StackPane>
+    </center>
+</BorderPane>

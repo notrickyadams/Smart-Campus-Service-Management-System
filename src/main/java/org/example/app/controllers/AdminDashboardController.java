@@ -6,6 +6,8 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import org.example.app.Main;
+import org.example.app.managers.AuthenticationManager;
 import org.example.app.managers.SystemManager;
 import org.example.app.models.Request;
 import org.example.app.utils.ThemeManager;
@@ -131,6 +133,12 @@ public class AdminDashboardController {
     public void toggleTheme() {
         isDarkMode = !isDarkMode;
         ThemeManager.toggle(isDarkMode, rootPane, themeButton);
+    }
+
+    @FXML
+    private void handleLogout() {
+        AuthenticationManager.getInstance().logout();
+        Main.navigateTo("Login.fxml", 800, 850);
     }
 
 

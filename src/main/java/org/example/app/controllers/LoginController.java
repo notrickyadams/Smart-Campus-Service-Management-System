@@ -9,6 +9,7 @@ import org.example.app.managers.AuthenticationManager;
 import org.example.app.models.Admin;
 import org.example.app.models.Student;
 import org.example.app.models.User;
+import org.example.app.utils.ThemeManager;
 
 public class LoginController {
 
@@ -60,6 +61,10 @@ public class LoginController {
         messageLabel.setText("");
     }
 
+    @FXML
+    private void goToRegister() {
+        Main.navigateTo("RegisterScreen.fxml", 800, 850);
+    }
     @FXML
     public void selectAdmin() {
         selectedRole = "Admin";
@@ -128,52 +133,7 @@ public class LoginController {
     @FXML
     public void toggleTheme() {
         isDarkMode = !isDarkMode;
-        if (isDarkMode) {
-            rootPane.setStyle("-fx-background-color: linear-gradient(to bottom right, #0f172a, #1e293b);");
-            loginCard.setStyle(
-                    "-fx-background-color: rgba(255,255,255,0.05); -fx-background-radius: 24;" +
-                            "-fx-padding: 45; -fx-border-color: rgba(255,255,255,0.08); -fx-border-radius: 24;"
-            );
-            usernameField.setStyle(
-                    "-fx-background-color: rgba(255,255,255,0.07); -fx-text-fill: white;" +
-                            "-fx-prompt-text-fill: #475569; -fx-font-size: 14; -fx-background-radius: 14;" +
-                            "-fx-border-color: #334155; -fx-border-radius: 14; -fx-padding: 0 15 0 15;"
-            );
-            passwordField.setStyle(
-                    "-fx-background-color: rgba(255,255,255,0.07); -fx-text-fill: white;" +
-                            "-fx-prompt-text-fill: #475569; -fx-font-size: 14; -fx-background-radius: 14;" +
-                            "-fx-border-color: #334155; -fx-border-radius: 14; -fx-padding: 0 15 0 15;"
-            );
-            themeButton.setText("☾ Dark Mode");
-            themeButton.setStyle(
-                    "-fx-background-color: #1e293b; -fx-text-fill: white; -fx-font-size: 13;" +
-                            "-fx-font-weight: bold; -fx-background-radius: 14;" +
-                            "-fx-border-color: #475569; -fx-border-radius: 14; -fx-cursor: hand;"
-            );
-        } else {
-            rootPane.setStyle("-fx-background-color: linear-gradient(to bottom right, #e2e8f0, #f8fafc);");
-            loginCard.setStyle(
-                    "-fx-background-color: white; -fx-background-radius: 24; -fx-padding: 45;" +
-                            "-fx-border-color: #e2e8f0; -fx-border-radius: 24;" +
-                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 20, 0, 0, 4);"
-            );
-            usernameField.setStyle(
-                    "-fx-background-color: #f8fafc; -fx-text-fill: #0f172a;" +
-                            "-fx-prompt-text-fill: #94a3b8; -fx-font-size: 14; -fx-background-radius: 14;" +
-                            "-fx-border-color: #cbd5e1; -fx-border-radius: 14; -fx-padding: 0 15 0 15;"
-            );
-            passwordField.setStyle(
-                    "-fx-background-color: #f8fafc; -fx-text-fill: #0f172a;" +
-                            "-fx-prompt-text-fill: #94a3b8; -fx-font-size: 14; -fx-background-radius: 14;" +
-                            "-fx-border-color: #cbd5e1; -fx-border-radius: 14; -fx-padding: 0 15 0 15;"
-            );
-            themeButton.setText("☀ Light Mode");
-            themeButton.setStyle(
-                    "-fx-background-color: #f1f5f9; -fx-text-fill: #0f172a; -fx-font-size: 13;" +
-                            "-fx-font-weight: bold; -fx-background-radius: 14;" +
-                            "-fx-border-color: #cbd5e1; -fx-border-radius: 14; -fx-cursor: hand;"
-            );
-        }
+        ThemeManager.toggle(isDarkMode, rootPane, themeButton);
     }
 
     // ── HELPERS ──────────────────────────────────────────────

@@ -4,6 +4,7 @@
 <?import javafx.scene.layout.*?>
 
 <BorderPane
+        fx:id="rootPane"
         prefHeight="850" prefWidth="900"
         style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #1e293b);"
         xmlns="http://javafx.com/javafx/17.0.2-ea"
@@ -273,6 +274,20 @@
                                 -fx-border-radius: 14;
                                 -fx-cursor: hand;"
                                 text="📋 Track Status" />
+
+
+                        <Button prefHeight="44" prefWidth="240"
+                                onAction="#goToAnalytics"
+                                style="
+        -fx-background-color: rgba(124,58,237,0.2);
+        -fx-text-fill: #a78bfa;
+        -fx-font-size: 13;
+        -fx-font-weight: bold;
+        -fx-background-radius: 14;
+        -fx-border-color: rgba(124,58,237,0.4);
+        -fx-border-radius: 14;
+        -fx-cursor: hand;"
+                                text="📊 My Analytics" />
 
                         <Button prefHeight="44" prefWidth="240"
                                 onAction="#handleLogout"

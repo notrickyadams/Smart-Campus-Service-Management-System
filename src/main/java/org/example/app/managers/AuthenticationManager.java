@@ -1,33 +1,17 @@
 package org.example.app.managers;
 
+import org.example.app.config.SupabaseClient;
 import org.example.app.models.Admin;
 import org.example.app.models.Student;
 import org.example.app.models.User;
 import org.example.app.models.UserFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class AuthenticationManager {
 
     private static AuthenticationManager instance;
-    private List<User> users = new ArrayList<>();
     private User currentUser;
 
-    private AuthenticationManager() {
-        // Load users from file first
-        List<User> loaded = FileManager.getInstance().loadUsers();
-
-        if (loaded.isEmpty()) {
-            // First run — create defaults and save them
-            users.add(new Admin("admin", "admin123"));
-            users.add(new Student("student", "student123"));
-            users.add(new Student("alice", "alice123"));
-            saveToFile();
-        } else {
-            users = loaded;
-        }
-    }
+    private AuthenticationManager() {}
 
     public static AuthenticationManager getInstance() {
         if (instance == null) instance = new AuthenticationManager();
@@ -35,47 +19,77 @@ public class AuthenticationManager {
     }
 
     public User login(String username, String password) {
-        for (User user : users) {
-            if (user.getUsername().equals(username) &&
-                    user.checkPassword(password)) {
-                currentUser = user;
-                return user;
-            }
+        try {
+            String endpoint = "/users?username=eq." + username
+                    + "&password=eq." + password
+                    + "&select=username,password,role";
+
+            String response = SupabaseClient.get(endpoint);
+            System.out.println("LOGIN RESPONSE: " + response);
+
+            if (response == null || response.trim().equals("[]")) return null;
+
+            String role  = extractField(response, "role");
+            String uname = extractField(response, "username");
+            String pwd   = extractField(response, "password");
+
+            if (uname == null || role == null) return null;
+
+            currentUser = UserFactory.createUser(uname, pwd != null ? pwd : "", role);
+            return currentUser;
+
+        } catch (Exception e) {
+            System.err.println("Login error: " + e.getMessage());
+            return null;
         }
-        return null;
     }
 
     public boolean register(String username, String password) {
-        for (User user : users) {
-            if (user.getUsername().equals(username)) return false;
+        try {
+            System.out.println("=== REGISTERING: " + username + " ===");
+
+            // Check if username exists
+            String checkResponse = SupabaseClient.get(
+                    "/users?username=eq." + username + "&select=username"
+            );
+            System.out.println("CHECK RESPONSE: " + checkResponse);
+
+            if (checkResponse != null && !checkResponse.trim().equals("[]")) {
+                System.out.println("Username taken.");
+                return false;
+            }
+
+            // Insert new user
+            String json = "{" +
+                    "\"username\":\"" + username + "\"," +
+                    "\"password\":\"" + password + "\"," +
+                    "\"role\":\"Student\"" +
+                    "}";
+
+            System.out.println("INSERTING: " + json);
+            int status = SupabaseClient.post("/users", json);
+            System.out.println("INSERT STATUS: " + status);
+
+            return status == 200 || status == 201;
+
+        } catch (Exception e) {
+            System.err.println("Register error: " + e.getMessage());
+            e.printStackTrace();
+            return false;
         }
-        User newUser = UserFactory.createUser(username, password, "student");
-        users.add(newUser);
-        saveToFile(); // persist immediately
-        return true;
     }
 
-    private void saveToFile() {
-        // Save as raw strings since we need plaintext passwords
-        List<String[]> raw = new ArrayList<>();
-        for (User user : users) {
-            // We store password in a field we can access via subclass
-            // so we use a workaround — store during creation
-            raw.add(new String[]{
-                    user.getUsername(),
-                    getRawPassword(user),
-                    user.getRole()
-            });
+    private String extractField(String json, String field) {
+        try {
+            String key = "\"" + field + "\":\"";
+            int start = json.indexOf(key);
+            if (start == -1) return null;
+            start += key.length();
+            int end = json.indexOf("\"", start);
+            return json.substring(start, end);
+        } catch (Exception e) {
+            return null;
         }
-        FileManager.getInstance().saveUsersRaw(raw);
-    }
-
-    // Helper to get password — since checkPassword compares, we store it
-    private String getRawPassword(User user) {
-        // checkPassword compares this.password == input
-        // so we try the username as a trick — not secure but fine for this project
-        // Better: add getPassword() to User
-        return user.getPassword();
     }
 
     public User getCurrentUser() { return currentUser; }

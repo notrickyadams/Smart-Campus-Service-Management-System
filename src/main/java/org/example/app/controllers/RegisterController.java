@@ -1,5 +1,6 @@
 package org.example.app.controllers;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -16,6 +17,8 @@ public class RegisterController {
     @FXML private BorderPane    rootPane;
     @FXML private VBox          registerCard;
 
+
+
     @FXML
     public void handleRegister() {
         String username = usernameField.getText().trim();
@@ -26,38 +29,41 @@ public class RegisterController {
             showError("Please fill in all fields.");
             return;
         }
-
         if (username.length() < 3) {
             showError("Username must be at least 3 characters.");
             return;
         }
-
         if (password.length() < 6) {
             showError("Password must be at least 6 characters.");
             return;
         }
-
         if (!password.equals(confirm)) {
             showError("Passwords do not match.");
             return;
         }
 
-        boolean success = AuthenticationManager.getInstance()
-                .register(username, password);
+        // Show loading while we call Supabase in background
+        showInfo("Creating account...");
 
-        if (success) {
-            showSuccess("Account created! Redirecting to login...");
-            new Thread(() -> {
-                try {
-                    Thread.sleep(1500);
-                    javafx.application.Platform.runLater(() ->
-                            Main.navigateTo("Login.fxml", 800, 850)
-                    );
-                } catch (InterruptedException ignored) {}
-            }).start();
-        } else {
-            showError("Username already taken. Try another.");
-        }
+        new Thread(() -> {
+            try {
+                boolean success = AuthenticationManager.getInstance()
+                        .register(username, password);
+
+                Platform.runLater(() -> {
+                    if (success) {
+                        showSuccess("Account created! Go back and sign in.");
+                    } else {
+                        showError("Registration failed. Try a different username.");
+                    }
+                });
+
+            } catch (Exception e) {
+                Platform.runLater(() ->
+                        showError("Error: " + e.getMessage())
+                );
+            }
+        }).start();
     }
 
     @FXML
@@ -73,5 +79,10 @@ public class RegisterController {
     private void showSuccess(String msg) {
         messageLabel.setText(msg);
         messageLabel.setStyle("-fx-text-fill: #22c55e; -fx-font-size: 13; -fx-font-weight: bold; -fx-alignment: CENTER;");
+    }
+
+    private void showInfo(String msg) {
+        messageLabel.setText(msg);
+        messageLabel.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 13; -fx-font-weight: bold; -fx-alignment: CENTER;");
     }
 }

@@ -92,6 +92,7 @@
                     </HBox>
                 </VBox>
 
+
                 <!-- TITLE -->
                 <VBox alignment="CENTER" spacing="6">
                     <Label fx:id="roleTitle" style="
@@ -156,6 +157,21 @@
                         -fx-font-weight: bold;
                         -fx-background-radius: 14;
                         -fx-cursor: hand;" />
+
+
+                <!-- CREATE ACCOUNT BUTTON — ADD THIS -->
+                <Button text="New? Create Account"
+                        prefHeight="44" prefWidth="340"
+                        onAction="#goToRegister"
+                        style="
+        -fx-background-color: transparent;
+        -fx-text-fill: #94a3b8;
+        -fx-font-size: 13;
+        -fx-font-weight: bold;
+        -fx-background-radius: 14;
+        -fx-border-color: #334155;
+        -fx-border-radius: 14;
+        -fx-cursor: hand;" />
 
                 <!-- FOOTER NOTE -->
                 <Label style="-fx-text-fill: #475569; -fx-font-size: 12;"

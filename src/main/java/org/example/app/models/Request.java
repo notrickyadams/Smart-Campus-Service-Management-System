@@ -1,42 +1,22 @@
 package org.example.app.models;
+
 public class Request {
 
+    private int     id;
     private Student student;
     private Service service;
-    private String status;
+    private String  status;
 
     public Request(Student student, Service service) {
         this.student = student;
         this.service = service;
-        this.status = "Pending";
+        this.status  = "Pending";
     }
 
-    public void submitRequest() {
-        System.out.println("Request submitted");
-    }
-
-    public void updateStatus(String status) {
-        this.status = status;
-    }
-
-    public void displayStatus() {
-        System.out.println("Current Status: " + status);
-    }
-
-    public Service getService() {
-        return service;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-
+    public int     getId()                  { return id; }
+    public void    setId(int id)            { this.id = id; }
+    public Student getStudent()             { return student; }
+    public Service getService()             { return service; }
+    public String  getStatus()              { return status; }
+    public void    setStatus(String status) { this.status = status; }
 }
